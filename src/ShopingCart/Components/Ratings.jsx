@@ -1,22 +1,18 @@
 import React from "react";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
-
-const Ratings = ({ rating, starClick, style }) => {
-
-
-  
+const Ratings = ({rate, increaseRate, styles}) => {
+   
   return (
-    <>
+    <div>
+      {/* <AiOutlineStar style={{ color: "orange" }}/> */}
       {[...Array(5)].map((c, i) => {
-        return (
-          <span key={i} onClick={(p)=>starClick(i)} style={style}>
-            {rating > i ? <AiFillStar  color="orange"/> : <AiOutlineStar />}
-          </span>
-        );
+        return <span  key={i} onClick={(prrExpecting)=>increaseRate(i)} style={styles}>
+            {rate > i? <AiFillStar style={{ color: "orange" }}/> : <AiOutlineStar/>
+            }
+            
+            </span> ;
       })}
-
-     
-    </>
+    </div>
   );
 };
 

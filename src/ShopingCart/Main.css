@@ -1,35 +1,120 @@
-.rating{
-    margin-top: -10px;
-}
-/* .checked {
-    color: orange;
-  } */
 
+/* .searchBox{
+    width: 600px !important;
+} */
 
-   .sidebar{
-      width: 250px;
-      height: 500vh;
-      margin-right: 16px;
-  }
-  /*.side{
-      display: inline-block;
-      width: 200px;
-   } */
-  
-  
-  .stars{
-      cursor: pointer;
-  }
-
-  .line{
-    /* border: none;
-    height: 3px;
-    background-color: rgb(196, 196, 196);
-    box-shadow: 1px 2px 2px rgb(196, 196, 196); */
-    margin-top: 3px;
+/* styling */
+.searchDiv {
+    /* width: 250px;
+    height: 200px; */
+    width: fit-content;
+    width: -moz-fit-content;
+    border: solid 1px black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 
 }
-.cart{
+
+/* .searchDiv:hover>.searchText {
+    width: 600px;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 2 4 8 rgba(0, 0, 0, 0.5);
+} */
+
+.searchText {
+    /* width: 180px; */
+    width: 600px;
+    border-radius: 0px;
+    width: 600px;
+    padding: 8px;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+    transition: 1s;
+
+}
+
+.searchText:focus {
+    outline: none;
+}
+
+#searchBtn {
+    width: 40px;
+    height: 40px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 110, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+   
+}
+
+@media only screen and (max-width: 768px) {
+    /* .searchBox{
+        width: 450px !important;
+    } */
+    .searchText {
+        /* width: 180px; */
+        width: 450px;
+        border-radius: 0px;
+        padding: 8px;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+        transition: 1s;
+    
+    }
+    .Producttitle{
+        font-size: medium;
+        padding-left: 8px;  
+      }
+      .price{
+          font-size: medium;
+  
+      }
+   
+  }
+@media only screen and (max-width: 568px) {
+    /* .searchBox{
+        width: 250px !important;
+    } */
+    .searchText {
+        /* width: 180px; */
+        width: 250px;
+        border-radius: 0px;
+        padding: 8px;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+        transition: 1s;
+    
+    }
+    .Producttitle{
+      font-size: 12px;
+      padding-left: 8px;  
+    }
+    .price{
+        font-size: 12px;
+
+    }
+
+   
+    .navbar-brand{
+        display: none;
+    }
+  }
+@media only screen and (max-width: 376px) {
+    .searchBox{
+        width: 200px !important;
+    }
+    .navbar-brand{
+        display: none;
+    }
+  }
+
+  .cart{
     
     color: lightgreen;
 }
@@ -57,9 +142,6 @@
 }
 .itemWraper{
     width: 90%;
-    height: 350px;
-    /* overflow-y: auto; */
-
 }
 .product{
     width: 130px;

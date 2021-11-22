@@ -1,48 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import Ratings from "./Ratings";
-import {CartState} from "../Context/Context";
+import {Button } from "@material-ui/core";
+import Stack from '@mui/material/Stack';
+import { useCartState } from "../Context/Context";
 
-//here array get destructure and a object obj is taken out 
-const SingleProduct = ({prod}) => {
-  const {state:{cart}, dispatch} = CartState()
-  
-  
+const SingleProduct = ({ prod }) => {
+  // const [rate, setRate] = useState(3);
+  const {
+    state: { cart },
+    dispatch,
+    state,
+  } = useCartState();
   return (
     <>
-      <div className="col-lg-4 gy-3 col-md-6 col-10 mx-auto" key={prod.id}>
-        <div className="card" style={{ width: "18rem" }}>
-          <img src={prod.image} className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h5 className="card-title">{prod.name}</h5>
-            <h6>RS {prod.price}</h6>
-            {prod.fastDelivery ? (
-              <p className="card-text">Fast Delivery </p>
+      <div
+        className="card col-sm-10 col-md-6 col-lg-4 my-2 mx-auto"
+        style={{ width: "18rem" }}
+      >
+        <img src={prod.image} class="card-img-top" alt="..." />
+        <div className="card-body">
+          <h5 className="card-title">{prod.name}</h5>
+          <h5 className="card-title">RS {prod.price}</h5>
+          <p className="card-text">{prod.fastDelivery === true? <span>fast delivery</span>: <span>delivery in 4 days</span> } </p>
+          <p className="card-text">{prod.inStock >=1? <span>In stock {prod.inStock}</span> : <span style={{color:"red", fontWeight:'bold'}}>Out Of Stock</span>}</p>
+          {/* <Ratings rate={prod.rating} increaseRate={(p) => setRate(p + 1)} /> */}
+          <Ratings rate={prod.rating} />
+          {
+            // some check weather id is present or not
+            cart.some((p) => p.id === prod.id) ? (
+              <Button
+              variant="contained"
+                color="error"
+                className=" text-capitalize bg-danger text-white"
+                onClick={() => dispatch({type:"REMOVE_FROM_CART", payload:prod.id})}
+              >
+                Remove from cart
+              </Button>
+            ) : prod.inStock > 0 ? (
+              <Button variant="contained" color="primary"
+                className="text-capitalize"
+                onClick={() => dispatch({ type: "ADD_TO_CART", payload: prod })}
+              >
+                add to cart
+              </Button>
             ) : (
-              <p className="card-text">Delivery in 4 days </p>
-            )}
-
-            <div className="rating">
-              <Ratings rating={prod.rating} />
-            </div>
-            { // some method check some thing present in array or not
-              cart.some(insideCartProduct=>insideCartProduct.id === prod.id)? <button className="btn btn-danger  text-capitalize" onClick={()=>dispatch({type:"REMOVE_FROM_CART", payload:prod})} >Remove from cart</button> : (prod.inStock <= 0 ? (
-                <button className="btn btn-secondary disabled text-capitalize">
-                  Currently out of stock
-                </button>
-              ) : (
-                <button className="btn btn-primary  text-capitalize" onClick={()=>{dispatch({type:"ADD_TO_CART", payload:prod});console.log("added in cart ", cart);}}>
-                 
-                  Add to cart
-                </button>
-              ))
-            }
-
-           
-          </div>
+              <Button disabled variant="contained">
+                out of stock
+              </Button>
+            )
+          }
         </div>
       </div>
-
-      {/*  scard */}
+     
     </>
   );
 };

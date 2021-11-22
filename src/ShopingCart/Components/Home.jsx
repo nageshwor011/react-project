@@ -1,53 +1,53 @@
-import React from "react";
-import { CartState } from "../Context/Context";
-import SideBar from "./SideBar";
 import SingleProduct from "./SingleProduct";
-
+import React, { useState } from "react";
+import { useCartState } from "../Context/Context";
+import SimpleDrawer from "./SimpleDrawer";
 const Home = () => {
-  //object destructuring state
-  //again state is destructuring simply double destructuring
   const {
-    state: { products },
-    productState: { byStock, byFastDelivery, byRating, searchQuery, sort },
-  } = CartState();
-  console.log("tot rating ", byRating);
+    state: { product },
+    filterState: { outOfStock, byFastDelivery, byRating, bySearch, sort },
+  } = useCartState();
+  console.log("fast delivery", byFastDelivery);
 
-  const transformProduct = () => {
-    let sortedProcucts = products;
-
+  // here filtering product according to user selection from home page
+  const displayProductByFiltering = () => {
+    let sortedProduct = product;
     if (sort) {
-      sortedProcucts = sortedProcucts.sort((a, b) => {
+      sortedProduct = sortedProduct.sort((a, b) => {
         return sort === "lowToHigh" ? a.price - b.price : b.price - a.price;
       });
     }
-    if(!byStock){
-      sortedProcucts = sortedProcucts.filter((prod)=>{ return prod.inStock})
+
+    if (!outOfStock) {
+      sortedProduct = sortedProduct.filter((cItem) => cItem.inStock);
     }
-    if(byFastDelivery){
-      sortedProcucts  = sortedProcucts.filter((prod)=> prod.fastDelivery)
+    if (byFastDelivery) {
+      sortedProduct = sortedProduct.filter((cItem) => cItem.fastDelivery);
     }
-    if(byRating){
-      sortedProcucts = sortedProcucts.filter((prod)=>prod.rating === byRating)
+    if (byRating) {
+      sortedProduct = sortedProduct.filter((c) => c.rating >= byRating);
     }
-    if(searchQuery){
-      sortedProcucts = sortedProcucts.filter((prod)=> prod.name.toLowerCase().includes(searchQuery));
+    if (bySearch) {
+      sortedProduct = sortedProduct.filter((c) =>
+        c.name.toLowerCase().includes(bySearch)
+      );
     }
-    console.log(sortedProcucts);
-    return sortedProcucts;
+
+    return sortedProduct;
   };
 
   return (
     <div className="container-fluid">
-      <div className="d-flex my-2">
-        <div className="sidebar my-3 one">
-          <SideBar />
-        </div>
         <div className="row">
-          {transformProduct().map((prod) => {
-            return <SingleProduct key={prod.id} prod={prod} />;
+          <SimpleDrawer/>
+          {displayProductByFiltering().map((cItem) => {
+            // {product.map((cItem) => {
+            return <SingleProduct key={cItem.id} prod={cItem} />;
           })}
         </div>
-      </div>
+    
+
+      {/* main row end */}
     </div>
   );
 };

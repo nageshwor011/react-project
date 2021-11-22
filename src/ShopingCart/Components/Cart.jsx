@@ -1,43 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { CartState } from "../Context/Context";
+// import AddIcon from '@mui/icons-material/Add';
 import { Scrollbars } from "react-custom-scrollbars-2";
+import { useCartState } from "../Context/Context";
 
 const Cart = () => {
   const {
-    state: { cart }, state,
+    state: { cart },
     dispatch,
-  } = CartState();
-  // console.log(cart);
-  const [grandTotalPrice, setGrandTotalPrice] = useState();
+  } = useCartState();
+  const [grandTotal, setGrandTotalPrice] = useState([]);
 
-  const totalPrice = ()=>{
-    setGrandTotalPrice(cart.reduce((accum, cur)=>{
-      return  accum + Number(cur.price)* cur.qty;
-      },0))
-  }
+  const total = () => {
+    const { totalPrice, totalProductInCart } = cart.reduce(
+      (accum, cItem) => {
+        const { price, qty } = cItem;
+        let subTotalPrice = Number(price) * qty;
+        accum.totalPrice = accum.totalPrice + subTotalPrice;
+        accum.totalProductInCart = accum.totalProductInCart + qty;
+        return accum;
+      },
+      { totalPrice: 0, totalProductInCart: 0 }
+    );
+    setGrandTotalPrice([totalPrice, totalProductInCart]);
+  // console.log("total price is", totalPrice+"     qty"+ totalProductInCart);
+
+  };
+
+  
   useEffect(() => {
-   totalPrice();
+      total();
   }, [cart])
-  return (
-    <>
-      <div className="container">
-        <h4>This is cart page</h4>
 
-        <section className="mt-5">
-          <h3>shoping cart</h3>
-          <p>
-            You have <span className="totalItems">{cart.length}</span> diffrent
-            Items & total items avaliable in cart
-          </p>
-          <div className="cartItems  py-3 bg-light ">
-            {/* scrool bar start */}
-            <Scrollbars>
+  // console.log("total price is", total.price);
+  return (
+    <div className="container">
+      <h1 className="text-center">This is cart page</h1>
+      <section className="mt-5">
+        <h3>shoping cart</h3>
+        <p>
+          You have <span className="totalItems">{cart.length}</span> diffrent
+          Items & { grandTotal[1]} total items avaliable in cart
+        </p>
+        <div className="cartItems  py-3 bg-light ">
+          {/* scrool bar start */}
+          <Scrollbars>
             <div className="itemWraper mx-auto">
               {cart.map((c, i) => {
                 // console.log(c);
-                let { image, name, price } = c;
+                let { image, name, price, qty, id } = c;
                 return (
-                  <div className="itemsContainer d-flex justify-content-between align-items-center">
+                  <div
+                    className="itemsContainer d-flex justify-content-between align-items-center"
+                    key={c.id}
+                  >
                     <div className="product">
                       <img
                         className="img-fluid py-1"
@@ -50,47 +65,63 @@ const Cart = () => {
                       {/* {ProductData.} */}
                     </div>
                     <div className="d-flex flex-column title">
-                      <h5>{name}</h5>
-                      <h6 className="text-muted">stock {c.inStock}</h6>
+                      <h5 className="Producttitle">{name}</h5>
                     </div>
                     <div className="flex flex-row">
-                    <select className="form-select" onChange={(e)=>{dispatch({type:"CHANGE_CART_QTY", payload:{id: c.id, qty: e.target.value}}); }}>
-                      <option >select the quantity</option>
-                      {
-                        [...Array(c.inStock)].map((item, i)=>{
-                          return( <option value={i+1} key={i}>{i+1}</option>)
-                        })
-                      }
-                      
-                    </select>
-                      
+                      {/* <AddIcon/> */}
+                      <button
+                        className="text-black m2-2 btn"
+                        onClick={() =>
+                          dispatch({ type: "DECREASE_QTY", payload: id })
+                        }
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        name=""
+                        id=""
+                        placeholder={qty}
+                        style={{ width: "50px" }}
+                      />
+                      <button
+                        className="text-black btn "
+                        onClick={() =>
+                          dispatch({ type: "INCREASE_QTY", payload: id })
+                        }
+                      >
+                        +
+                      </button>
                     </div>
-                    <h5>
-                      RS {Number(price)} <span></span>
+                    <h5 className="price">
+                      RS <span className="price">{price}</span>
                     </h5>
-                    <i className="fal fa-times me-2" onClick={()=> dispatch({type:"REMOVE_FROM_CART", payload:c})}></i>
+                    <i
+                      className="fal fa-times me-2"
+                      onClick={() =>
+                        dispatch({ type: "REMOVE_FROM_CART", payload: id })
+                      }
+                    ></i>
                   </div>
                 );
               })}
             </div>
-            </Scrollbars>
-            {/* scrool bar end */}
-          </div>
+          </Scrollbars>
+          {/* scrool bar end */}
+        </div>
 
-          <div className="d-flex flex-column align-items-end">
-            <h5 className="total  mt-3 ">
-              Grand Total RS <span>{grandTotalPrice}</span>
-            </h5>
-           
+        <div className="d-flex flex-column align-items-end">
+          <h5 className="total  mt-3 ">
+            Grand Total RS <span>{grandTotal[0]}</span>
+          </h5>
 
-            <div className="d-flex flex-row justify-content-between">
-              <button className="btn btn-danger mx-2" onClick={()=>dispatch({type:"DELETE_ALL"})}>Clear Cart</button>
-              <button className="btn btn-info mx-2">Check out</button>
-            </div>
+          <div className="d-flex flex-row justify-content-between">
+            <button className="btn btn-danger mx-2" onClick={()=> dispatch({type:"CLEAR_CART"})}>Clear Cart</button>
+            <button className="btn btn-info mx-2">Check out</button>
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+    </div>
   );
 };
 
